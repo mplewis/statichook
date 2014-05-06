@@ -20,5 +20,6 @@ var projects = [
 ];
 
 module.exports = {
+  global: global,
   projects: projects
 };
