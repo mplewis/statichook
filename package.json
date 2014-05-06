@@ -1,0 +1,27 @@
+{
+  "name": "statichook",
+  "description": "Push to Bitbucket, trigger a webhook, and upload your static site via SCP.",
+  "version": "0.0.1",
+  "maintainers": [
+    {
+      "name": "Matthew Lewis",
+      "email": "matt@mplewis.com",
+      "web": "http://www.mplewis.com/"
+    }
+  ],
+  "dependencies": {
+    "tmp": "0.0.23",
+    "nodegit": "0.1.3",
+    "scp2": "0.1.4"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:mplewis/statichook.git"
+  },
+  "licenses": [
+    {
+      "name": "The MIT License",
+      "url": "http://opensource.org/licenses/MIT"
+    }
+  ]
+}
