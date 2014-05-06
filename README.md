@@ -1,4 +1,4 @@
 statichook
 ==========
 
-Push to GitHub, trigger a webhook, and upload your static site via SCP.
+Push to Bitbucket, trigger a webhook, and upload your static site via SCP.
