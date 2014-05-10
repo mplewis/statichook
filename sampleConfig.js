@@ -7,14 +7,14 @@ var projects = [
   {
     repo: {
       owner: 'yourbitbucketusername',
-      slug: 'your-bitbucket-repo-name',
+      slug: 'your-bitbucket-source-repo-name',
       sshPrivKeyPath: '/home/youruser/.ssh/id_rsa'
     },
     dest: {
       host: 'yourstaticwebhost.com',
       username: 'yourusername',
       password: 'yourpassword',
-      path: '/home/youruser/public_html/'
+      path: '/home/youruser/html_dest/'
     }
   }
 ];
