@@ -1,5 +1,6 @@
 var global = {
-  domain: 'http://subdomain.yourdomain.com/',
+  host: 'http://subdomain.yourdomain.com',
+  port: 8461,
   secretUrlSuffix: 'putSomeAlphanumericSecretCharsHere'
 };
 
