@@ -4,6 +4,7 @@ var scpHandler = require('./scpHandler');
 
 var tmp = require('tmp');
 var winston = require('winston');
+var SCP = require('scp2');
 
 var util = require('util');
 
@@ -52,7 +53,22 @@ function handle(hookData) {
         winston.log('error', 'EXIT CODE: ' + exitCode);
         throw err;
       }
-      winston.log('info', util.format('Git clone complete for %s/%s', owner, slug));
+      winston.log('info', 'Git clone complete for', projNick);
+
+      scpOptions = {
+        host: project.dest.host,
+        username: project.dest.username,
+        password: project.dest.password,
+        path: project.dest.path
+      };
+      winston.log('info', 'Starting SCP for', projNick);
+      SCP.scp(tmpDir, scpOptions, function(err) {
+        if (err) {
+          winston.log('error', 'SCP failed for', projNick);
+          throw err;
+        }
+        winston.log('info', 'SCP complete for', projNick);
+      });
     });
   });
 }
