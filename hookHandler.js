@@ -1,11 +1,14 @@
+// local packages
 var config = require('./config');
 var gitHandler = require('./gitHandler');
 var scpHandler = require('./scpHandler');
 
+// npm packages
 var tmp = require('tmp');
 var winston = require('winston');
 var SCP = require('scp2');
 
+// node packages
 var util = require('util');
 
 /* Check if posted hook data has a commit to Master AND corresponds to a
