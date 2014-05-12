@@ -6,7 +6,6 @@ var scpHandler = require('./scpHandler');
 // npm packages
 var tmp = require('tmp');
 var winston = require('winston');
-var SCP = require('scp2');
 
 // node packages
 var util = require('util');
@@ -29,8 +28,8 @@ function handle(hookData) {
     winston.log('info', 'No project found for', projNick);
     return;
   }
-  winston.log('debug', 'Project info:');
-  winston.log('debug', util.inspect(project));
+  winston.log('debug', 'Project repo info:');
+  winston.log('debug', util.inspect(project.repo));
 
   winston.log('debug', 'Hook commit info:');
   winston.log('debug', util.inspect(hookData.commits));
@@ -59,22 +58,17 @@ function handle(hookData) {
       }
       winston.log('info', 'Git clone complete for', projNick);
 
-      var keyPath = project.dest.privateKey;
-      fs.readFile(keyPath, function(err, keyData) {
-        scpOptions = {
-          host: project.dest.host,
-          username: project.dest.username,
-          privateKey: keyData,
-          path: project.dest.path
-        };
-        winston.log('info', 'Starting SCP for', projNick);
-        SCP.scp(tmpDir, scpOptions, function(err) {
-          if (err) {
-            winston.log('error', 'SCP failed for', projNick);
+      scpHandler.scpToProject(project, tmpDir, function(err) {
+        if (err) {
+          if (err instanceof scpHandler.NoAuthException) {
+            winston.log('error', err.toString());
+          } else {
+            winston.log('error', 'scp failed for', projNick);
             throw err;
           }
-          winston.log('info', 'SCP complete for', projNick);
-        });
+        } else {
+          winston.log('info', 'scp complete for', projNick);
+        }
       });
     });
   });
