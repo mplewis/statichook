@@ -1,0 +1,22 @@
+{
+  "type": "object",
+  "required": [ "commits", "repository" ],
+  "properties": {
+    "commits": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [ "branch" ],
+        "properties": { "branch": { "type": "string" } }
+      }
+    },
+    "repository": {
+      "type": "object",
+      "required": [ "owner", "slug" ],
+      "properties": {
+        "owner": { "type": "string" },
+        "slug": { "type": "string" }
+      }
+    }
+  }
+}
