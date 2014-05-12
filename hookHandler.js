@@ -17,10 +17,11 @@ function handle(hookData) {
   var owner = hookData.repository.owner;
   var slug = hookData.repository.slug;
   var project = getProject(owner, slug);
-  winston.log('info', util.format('Received hook for %s/%s', owner, slug));
+  var projNick = util.format('%s/%s', owner, slug);
+  winston.log('info', 'Received hook for', projNick);
   
   if (!project) {
-    winston.log('info', util.format('No project found for %s/%s, ignoring', owner, slug));
+    winston.log('info', 'No project found for', projNick);
     return;
   }
   winston.log('debug', 'Project info:');
@@ -29,21 +30,21 @@ function handle(hookData) {
   winston.log('debug', 'Hook commit info:');
   winston.log('debug', util.inspect(hookData.commits));
   if (!hasMasterCommit(hookData.commits)) {
-    winston.log('info', util.format('No master commits found for %s/%s, ignoring', owner, slug));
+    winston.log('info', 'No master commits found for', projNick);
     return;
   }
 
-  winston.log('info', util.format('Running project for %s/%s', owner, slug));
+  winston.log('info', 'Running project for', projNick);
 
-  tmp.dir(function(err, destPath) {
+  tmp.dir(function(err, tmpDir) {
     if (err) throw err;
-    winston.log('info', 'Temp dir created:', destPath);
+    winston.log('info', 'Temp dir created for', projNick + ':', tmpDir);
     var repoUrl = project.repo.url;
     var keyPath = project.repo.sshPrivKeyPath;
-    gitHandler.cloneInto(repoUrl, destPath, keyPath,
+    gitHandler.cloneInto(repoUrl, tmpDir, keyPath,
         function(err, stdout, stderr, exitCode) {
       if (err) {
-        winston.log('error', 'Git clone failed');
+        winston.log('error', 'Git clone failed for', projNick);
         winston.log('error', 'STDOUT:');
         winston.log('error', stdout);
         winston.log('error', 'STDERR:');
