@@ -2,6 +2,7 @@
 var config = require('./config');
 var response = require('./response');
 var hookHandler = require('./hookHandler');
+var pjson = require('./package.json');
 
 // npm packages
 var express = require('express');
@@ -71,4 +72,5 @@ app.listen(config.global.port);
 var hookAddress = (config.global.host + ':' +
                    config.global.port + '/' +
                    config.global.secretUrlSuffix);
+winston.log('info', util.format('Welcome to %s v%s. Enjoy.', pjson.name, pjson.version));
 winston.log('info', util.format('Listening for hooks on %s', hookAddress));

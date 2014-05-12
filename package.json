@@ -1,7 +1,7 @@
 {
   "name": "statichook",
   "description": "Push to Bitbucket, trigger a webhook, and upload your static site via SCP.",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "maintainers": [
     {
       "name": "Matthew Lewis",
