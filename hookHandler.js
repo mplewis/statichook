@@ -6,6 +6,7 @@ var scpHandler = require('./scpHandler');
 // npm packages
 var tmp = require('tmp');
 var winston = require('winston');
+var rimraf = require('rimraf');
 
 // node packages
 var util = require('util');
@@ -69,6 +70,14 @@ function handle(hookData) {
         } else {
           winston.log('info', 'scp complete for', projNick);
         }
+        rimraf(tmpDir, function(err) {
+          if (err) {
+            winston.log('error', util.format('%s: Temp dir not removed: %s', projNick, tmpDir));
+            winston.log('error', err.toString());
+          } else {
+            winston.log('info', util.format('%s: Temp dir removed: %s', projNick, tmpDir));
+          }
+        });
       });
     });
   });
