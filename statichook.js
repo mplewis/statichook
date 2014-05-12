@@ -41,12 +41,24 @@ app.get(postAddress, function(req, res){
 // set up webhook route
 app.post(postAddress, function(req, res){
   var posted = req.body;
-  var errors = js.validate(posted, schema.bitbucket);
+  var payload;
+  try {
+    payload = JSON.parse(posted.payload);
+  } catch (e) {
+    winston.log('error', 'Could not parse payload JSON:', e);
+    winston.log('error', 'Posted data:');
+    winston.log('error', util.inspect(posted));
+  }
+  var errors = js.validate(payload, schema.bitbucket);
   if (errors.length > 0) {
     res.send(400, errors);
+    winston.log('warn', 'Malformed hook payload received:');
+    winston.log('warn', util.inspect(payload));
+    winston.log('warn', 'Errors generated:');
+    winston.log('warn', util.inspect(errors));
   } else {
     res.send(204);
-    hookHandler.handle(posted);
+    hookHandler.handle(payload);
   }
 });
 
