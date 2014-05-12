@@ -44,6 +44,7 @@ app.post(postAddress, function(req, res){
     winston.log('warn', 'Could not parse payload JSON:', e);
     winston.log('warn', 'Posted data:');
     winston.log('warn', util.inspect(posted));
+    return;
   }
   var errors = js.validate(payload, schema.bitbucket);
   if (errors.length > 0) {
@@ -52,10 +53,10 @@ app.post(postAddress, function(req, res){
     winston.log('warn', util.inspect(payload));
     winston.log('warn', 'Errors generated:');
     winston.log('warn', util.inspect(errors));
-  } else {
-    res.send(204);
-    hookHandler.handle(payload);
+    return;
   }
+  res.send(204);
+  hookHandler.handle(payload);
 });
 
 // set up 403 for all non-hook addresses
