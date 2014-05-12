@@ -15,7 +15,8 @@
     "scp2": "0.1.4",
     "express": "4.1.2",
     "body-parser": "1.0.2",
-    "jayschema": "0.2.7"
+    "jayschema": "0.2.7",
+    "winston": "0.7.3"
   },
   "scripts": {
     "start": "node statichook"

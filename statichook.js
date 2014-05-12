@@ -7,9 +7,18 @@ var hookHandler = require('./hookHandler');
 var express = require('express');
 var bodyParser = require('body-parser');
 var JaySchema = require('jayschema');
+var winston = require('winston');
 
 // node packages
 var util = require('util');
+
+// set up logging
+winston.remove(winston.transports.Console);
+winston.add(winston.transports.Console, {
+  colorize: true,
+  level: 'debug',
+  timestamp: true
+});
 
 // set up webhook data validator
 var js = new JaySchema();
@@ -53,4 +62,4 @@ app.listen(config.global.port);
 var hookAddress = (config.global.host + ':' +
                    config.global.port + '/' +
                    config.global.secretUrlSuffix);
-console.log(util.format('Listening for hooks on %s', hookAddress));
+winston.log('info', util.format('Listening for hooks on %s', hookAddress));

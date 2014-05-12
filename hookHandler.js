@@ -3,6 +3,9 @@ var gitHandler = require('./gitHandler');
 var scpHandler = require('./scpHandler');
 
 var tmp = require('tmp');
+var winston = require('winston');
+
+var util = require('util');
 
 /* Check if posted hook data has a commit to Master AND corresponds to a
  * project in the config file.
@@ -14,31 +17,41 @@ function handle(hookData) {
   var owner = hookData.repository.owner;
   var slug = hookData.repository.slug;
   var project = getProject(owner, slug);
+  winston.log('info', util.format('Received hook for %s/%s', owner, slug));
+  
   if (!project) {
+    winston.log('info', util.format('No project found for %s/%s, ignoring', owner, slug));
     return;
   }
-  console.log(project);
+  winston.log('debug', 'Project info:');
+  winston.log('debug', util.inspect(project));
+
+  winston.log('debug', 'Hook commit info:');
+  winston.log('debug', util.inspect(hookData.commits));
   if (!hasMasterCommit(hookData.commits)) {
+    winston.log('info', util.format('No master commits found for %s/%s, ignoring', owner, slug));
     return;
   }
-  console.log(owner, slug);
+
+  winston.log('info', util.format('Running project for %s/%s', owner, slug));
 
   tmp.dir(function(err, destPath) {
     if (err) throw err;
-    console.log("Dir: ", destPath);
+    winston.log('info', 'Temp dir created:', destPath);
     var repoUrl = project.repo.url;
     var keyPath = project.repo.sshPrivKeyPath;
     gitHandler.cloneInto(repoUrl, destPath, keyPath,
         function(err, stdout, stderr, exitCode) {
       if (err) {
-        console.log('STDOUT:');
-        console.log(stdout);
-        console.log('STDERR:');
-        console.log(stderr);
-        console.log('Exit code ' + exitCode);
+        winston.log('error', 'Git clone failed');
+        winston.log('error', 'STDOUT:');
+        winston.log('error', stdout);
+        winston.log('error', 'STDERR:');
+        winston.log('error', stderr);
+        winston.log('error', 'EXIT CODE: ' + exitCode);
         throw err;
       }
-      console.log('Git clone complete.');
+      winston.log('info', util.format('Git clone complete for %s/%s', owner, slug));
     });
   });
 }
