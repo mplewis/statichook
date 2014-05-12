@@ -10,7 +10,7 @@ var projects = [
       owner: 'yourbitbucketusername',
       slug: 'your-bitbucket-private-repo-name',
       url: 'git@bitbucket.org:yourbitbucketusername/your-bitbucket-private-repo-name.git',
-      sshPrivKeyPath: '/home/youruser/.ssh/id_rsa'
+      privateKey: '/home/youruser/.ssh/id_rsa'
     },
     dest: {
       host: 'yourstaticwebhost.com',

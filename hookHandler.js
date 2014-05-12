@@ -44,7 +44,7 @@ function handle(hookData) {
     if (err) throw err;
     winston.log('info', 'Temp dir created for', projNick + ':', tmpDir);
     var repoUrl = project.repo.url;
-    var keyPath = project.repo.sshPrivKeyPath;
+    var keyPath = project.repo.privateKey;
     gitHandler.cloneInto(repoUrl, tmpDir, keyPath,
         function(err, stdout, stderr, exitCode) {
       if (err) {
