@@ -10,6 +10,7 @@ var SCP = require('scp2');
 
 // node packages
 var util = require('util');
+var fs = require('fs');
 
 /* Check if posted hook data has a commit to Master AND corresponds to a
  * project in the config file.
@@ -58,19 +59,22 @@ function handle(hookData) {
       }
       winston.log('info', 'Git clone complete for', projNick);
 
-      scpOptions = {
-        host: project.dest.host,
-        username: project.dest.username,
-        password: project.dest.password,
-        path: project.dest.path
-      };
-      winston.log('info', 'Starting SCP for', projNick);
-      SCP.scp(tmpDir, scpOptions, function(err) {
-        if (err) {
-          winston.log('error', 'SCP failed for', projNick);
-          throw err;
-        }
-        winston.log('info', 'SCP complete for', projNick);
+      var keyPath = project.dest.privateKey;
+      fs.readFile(keyPath, function(err, keyData) {
+        scpOptions = {
+          host: project.dest.host,
+          username: project.dest.username,
+          privateKey: keyData,
+          path: project.dest.path
+        };
+        winston.log('info', 'Starting SCP for', projNick);
+        SCP.scp(tmpDir, scpOptions, function(err) {
+          if (err) {
+            winston.log('error', 'SCP failed for', projNick);
+            throw err;
+          }
+          winston.log('info', 'SCP complete for', projNick);
+        });
       });
     });
   });
