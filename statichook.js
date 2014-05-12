@@ -45,9 +45,9 @@ app.post(postAddress, function(req, res){
   try {
     payload = JSON.parse(posted.payload);
   } catch (e) {
-    winston.log('error', 'Could not parse payload JSON:', e);
-    winston.log('error', 'Posted data:');
-    winston.log('error', util.inspect(posted));
+    winston.log('warn', 'Could not parse payload JSON:', e);
+    winston.log('warn', 'Posted data:');
+    winston.log('warn', util.inspect(posted));
   }
   var errors = js.validate(payload, schema.bitbucket);
   if (errors.length > 0) {
