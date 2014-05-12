@@ -34,7 +34,14 @@ var projects = [
   }
 ];
 
+var winstonOptions = {
+  colorize: true,
+  level: 'info',
+  timestamp: true
+};
+
 module.exports = {
   global: global,
-  projects: projects
+  projects: projects,
+  winstonOptions: winstonOptions
 };

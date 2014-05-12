@@ -14,11 +14,7 @@ var util = require('util');
 
 // set up logging
 winston.remove(winston.transports.Console);
-winston.add(winston.transports.Console, {
-  colorize: true,
-  level: 'debug',
-  timestamp: true
-});
+winston.add(winston.transports.Console, config.winstonOptions);
 
 // set up webhook data validator
 var js = new JaySchema();
