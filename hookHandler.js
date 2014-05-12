@@ -23,10 +23,10 @@ function handle(hookData) {
   var slug = hookData.repository.slug;
   var project = getProject(owner, slug);
   var projNick = util.format('%s/%s', owner, slug);
-  winston.log('info', 'Received hook for', projNick);
+  winston.log('info', util.format('%s: Received hook', projNick));
   
   if (!project) {
-    winston.log('info', 'No project found for', projNick);
+    winston.log('info', util.format('%s: No project found', projNick));
     return;
   }
   winston.log('debug', 'Project repo info:');
@@ -35,40 +35,41 @@ function handle(hookData) {
   winston.log('debug', 'Hook commit info:');
   winston.log('debug', util.inspect(hookData.commits));
   if (!hasMasterCommit(hookData.commits)) {
-    winston.log('info', 'No master commits found for', projNick);
+    winston.log('info', util.format('%s: No master commits found', projNick));
     return;
   }
 
-  winston.log('info', 'Running project for', projNick);
+  winston.log('info', util.format('%s: Running project', projNick));
 
   tmp.dir(function(err, tmpDir) {
-    if (err) throw err;
-    winston.log('info', 'Temp dir created for', projNick + ':', tmpDir);
+    if (err) winston.log('error', err.toString());
+    winston.log('info', util.format('%s: Temp dir created: %s', projNick, tmpDir));
     var repoUrl = project.repo.url;
     var keyPath = project.repo.privateKey;
+    winston.log('info', util.format('%s: Cloning %s into %s', projNick, repoUrl, tmpDir));
     gitHandler.cloneInto(repoUrl, tmpDir, keyPath,
         function(err, stdout, stderr, exitCode) {
       if (err) {
-        winston.log('error', 'Git clone failed for', projNick);
+        winston.log('error', util.format('%s: Git clone failed', projNick));
         winston.log('error', 'STDOUT:');
         winston.log('error', stdout);
         winston.log('error', 'STDERR:');
         winston.log('error', stderr);
         winston.log('error', 'EXIT CODE: ' + exitCode);
-        throw err;
+        winston.log('error', err.toString());
       }
-      winston.log('info', 'Git clone complete for', projNick);
+      winston.log('info', util.format('%s: Git clone complete', projNick));
 
       scpHandler.scpToProject(project, tmpDir, function(err) {
         if (err) {
           if (err instanceof scpHandler.NoAuthException) {
             winston.log('error', err.toString());
           } else {
-            winston.log('error', 'scp failed for', projNick);
-            throw err;
+            winston.log('error', util.format('%s: scp failed', projNick));
+            winston.log('error', err.toString());
           }
         } else {
-          winston.log('info', 'scp complete for', projNick);
+          winston.log('info', util.format('%s: scp complete', projNick));
         }
         rimraf(tmpDir, function(err) {
           if (err) {

@@ -39,15 +39,16 @@ function scpWithPassword(srcPath, destPath, host, username, password, callback) 
 
 function scpToProject(project, srcPath, callback) {
   var projNick = util.format('%s/%s', project.repo.owner, project.repo.slug);
-  winston.log('info', 'Starting scp for', projNick);
   var d = project.dest;
+  winston.log('info', util.format('%s: Starting scp to %s @ %s:%s',
+                                  projNick, d.username, d.host, d.path));
   var keyPath = d.privateKey;
   var password = d.password;
   winston.log('debug', 'private key present:', !(!(keyPath)));
   winston.log('debug', 'password present:', !(!(password)));
   
   if (keyPath && password) {
-    winston.log('warn', util.format('Both private key and password provided for %s; ' +
+    winston.log('warn', util.format('%s: Both private key and password provided; ' +
                                     'using private key for authentication', projNick));
     scpWithKeyPath(srcPath, d.path, d.host, d.username, keyPath, callback);
   
