@@ -1,5 +1,8 @@
 var config = require('./config');
+var gitHandler = require('./gitHandler');
 var scpHandler = require('./scpHandler');
+
+var tmp = require('tmp');
 
 /* Check if posted hook data has a commit to Master AND corresponds to a
  * project in the config file.
@@ -14,10 +17,30 @@ function handle(hookData) {
   if (!project) {
     return;
   }
+  console.log(project);
   if (!hasMasterCommit(hookData.commits)) {
     return;
   }
   console.log(owner, slug);
+
+  tmp.dir(function(err, destPath) {
+    if (err) throw err;
+    console.log("Dir: ", destPath);
+    var repoUrl = project.repo.url;
+    var keyPath = project.repo.sshPrivKeyPath;
+    gitHandler.cloneInto(repoUrl, destPath, keyPath,
+        function(err, stdout, stderr, exitCode) {
+      if (err) {
+        console.log('STDOUT:');
+        console.log(stdout);
+        console.log('STDERR:');
+        console.log(stderr);
+        console.log('Exit code ' + exitCode);
+        throw err;
+      }
+      console.log('Git clone complete.');
+    });
+  });
 }
 
 /* Returns true if at least one commit in the commits array is to the master
