@@ -6,8 +6,7 @@
       "type": "array",
       "items": {
         "type": "object",
-        "required": [ "branch" ],
-        "properties": { "branch": { "type": "string" } }
+        "required": [ "branch" ]
       }
     },
     "repository": {
