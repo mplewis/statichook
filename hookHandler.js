@@ -11,6 +11,7 @@ var rimraf = require('rimraf');
 // node packages
 var util = require('util');
 var fs = require('fs');
+var path = require('path');
 
 /* Check if posted hook data has a commit to Master AND corresponds to a
  * project in the config file.
@@ -46,7 +47,7 @@ function handle(hookData) {
     winston.log('info', util.format('%s: Temp dir created: %s', projNick, tmpDir));
     var repoUrl = project.repo.url;
     var keyPath = project.repo.privateKey;
-    winston.log('info', util.format('%s: Cloning %s into %s', projNick, repoUrl, tmpDir));
+    winston.log('info', util.format('%s: Cloning %s', projNick, repoUrl));
     gitHandler.cloneInto(repoUrl, tmpDir, keyPath,
         function(err, stdout, stderr, exitCode) {
       if (err) {
@@ -60,7 +61,17 @@ function handle(hookData) {
       }
       winston.log('info', util.format('%s: Git clone complete', projNick));
 
-      scpHandler.scpToProject(project, tmpDir, function(err) {
+      var repoPath = project.repo.path;
+      var srcPath;
+      if (repoPath) {
+        srcPath = path.join(tmpDir, repoPath);
+        winston.log('info', util.format('%s: Sending files from repo directory %s', projNick, repoPath));
+      } else {
+        winston.log('info', util.format('%s: Sending all files from repo', projNick));
+      }
+      winston.log('debug', util.format('%s: Full path to files being sent: %s', projNick, srcPath));
+
+      scpHandler.scpToProject(project, srcPath, function(err) {
         if (err) {
           if (err instanceof scpHandler.NoAuthException) {
             winston.log('error', err.toString());
