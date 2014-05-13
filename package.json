@@ -17,7 +17,10 @@
     "jayschema": "0.2.7",
     "winston": "0.7.3",
     "rimraf": "2.2.8",
-    "scp2": "0.1.4"
+    "ssh2": "~0.2.12",
+    "glob": "~3.2.6",
+    "async": "~0.2.9",
+    "lodash": "~2.0.0"
   },
   "scripts": {
     "start": "node statichook"
