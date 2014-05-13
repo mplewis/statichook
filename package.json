@@ -16,7 +16,8 @@
     "body-parser": "1.0.2",
     "jayschema": "0.2.7",
     "winston": "0.7.3",
-    "rimraf": "2.2.8"
+    "rimraf": "2.2.8",
+    "scp2": "0.1.4"
   },
   "scripts": {
     "start": "node statichook"
